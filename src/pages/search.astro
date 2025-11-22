@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ReviewCard from '../components/ReviewCard.astro';
+import SearchBar from '../components/SearchBar.astro';
+import { getCollection } from 'astro:content';
+
+const allReviews = await getCollection('reviews');
+const sortedReviews = allReviews.sort(
+  (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+);
+
+// Get unique genres
+const allGenres = [...new Set(allReviews.flatMap((r) => r.data.genre))].sort();
+---
+
+<BaseLayout title="Search Movies">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-display font-bold mb-8">Search Movies</h1>
+
+    <!-- Search Bar -->
+    <div class="max-w-2xl mb-8">
+      <SearchBar placeholder="Search by title or genre..." autofocus />
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap gap-4 mb-8">
+      <div>
+        <label class="block text-sm text-gray-400 mb-2">Genre</label>
+        <select
+          id="genre-filter"
+          class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-white focus:outline-none focus:border-primary-500 transition"
+        >
+          <option value="">All Genres</option>
+          {allGenres.map((genre) => (
+            <option value={genre.toLowerCase()}>{genre}</option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-400 mb-2">Sort By</label>
+        <select
+          id="sort-filter"
+          class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-white focus:outline-none focus:border-primary-500 transition"
+        >
+          <option value="date">Latest</option>
+          <option value="rating">Highest Rated</option>
+          <option value="title">Title A-Z</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-400 mb-2">Min Rating</label>
+        <select
+          id="rating-filter"
+          class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-white focus:outline-none focus:border-primary-500 transition"
+        >
+          <option value="0">Any Rating</option>
+          <option value="7">7+</option>
+          <option value="8">8+</option>
+          <option value="9">9+</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Results Count -->
+    <p class="text-gray-400 mb-6">
+      Showing <span id="results-count">{sortedReviews.length}</span> movies
+    </p>
+
+    <!-- Results Grid -->
+    <div id="reviews-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {sortedReviews.map((review) => (
+        <div
+          class="review-item"
+          data-title={review.data.title.toLowerCase()}
+          data-genre={review.data.genre.map((g) => g.toLowerCase()).join(',')}
+          data-rating={review.data.rating}
+          data-date={review.data.publishDate.valueOf()}
+        >
+          <ReviewCard
+            title={review.data.title}
+            slug={review.slug}
+            rating={review.data.rating}
+            poster={review.data.poster}
+            genre={review.data.genre}
+            year={review.data.year}
+            excerpt={review.data.excerpt}
+          />
+        </div>
+      ))}
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-state" class="hidden text-center py-16">
+      <svg class="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <h3 class="text-xl font-bold text-gray-400 mb-2">No movies found</h3>
+      <p class="text-gray-500">Try adjusting your filters or search terms.</p>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const searchInput = document.getElementById('search-input') as HTMLInputElement;
+  const genreFilter = document.getElementById('genre-filter') as HTMLSelectElement;
+  const sortFilter = document.getElementById('sort-filter') as HTMLSelectElement;
+  const ratingFilter = document.getElementById('rating-filter') as HTMLSelectElement;
+  const reviewsGrid = document.getElementById('reviews-grid');
+  const resultsCount = document.getElementById('results-count');
+  const emptyState = document.getElementById('empty-state');
+
+  function filterAndSort() {
+    const searchTerm = searchInput?.value.toLowerCase() || '';
+    const selectedGenre = genreFilter?.value || '';
+    const minRating = parseInt(ratingFilter?.value || '0');
+    const sortBy = sortFilter?.value || 'date';
+
+    const items = Array.from(document.querySelectorAll('.review-item')) as HTMLElement[];
+
+    let visibleItems = items.filter((item) => {
+      const title = item.dataset.title || '';
+      const genres = item.dataset.genre || '';
+      const rating = parseInt(item.dataset.rating || '0');
+
+      const matchesSearch = !searchTerm || title.includes(searchTerm) || genres.includes(searchTerm);
+      const matchesGenre = !selectedGenre || genres.includes(selectedGenre);
+      const matchesRating = rating >= minRating;
+
+      return matchesSearch && matchesGenre && matchesRating;
+    });
+
+    // Sort
+    visibleItems.sort((a, b) => {
+      if (sortBy === 'rating') {
+        return parseInt(b.dataset.rating || '0') - parseInt(a.dataset.rating || '0');
+      } else if (sortBy === 'title') {
+        return (a.dataset.title || '').localeCompare(b.dataset.title || '');
+      }
+      return parseInt(b.dataset.date || '0') - parseInt(a.dataset.date || '0');
+    });
+
+    // Update visibility
+    items.forEach((item) => {
+      item.style.display = 'none';
+    });
+
+    visibleItems.forEach((item) => {
+      item.style.display = 'block';
+      reviewsGrid?.appendChild(item);
+    });
+
+    // Update count
+    if (resultsCount) resultsCount.textContent = String(visibleItems.length);
+
+    // Show/hide empty state
+    if (visibleItems.length === 0) {
+      emptyState?.classList.remove('hidden');
+      reviewsGrid?.classList.add('hidden');
+    } else {
+      emptyState?.classList.add('hidden');
+      reviewsGrid?.classList.remove('hidden');
+    }
+  }
+
+  searchInput?.addEventListener('input', filterAndSort);
+  genreFilter?.addEventListener('change', filterAndSort);
+  sortFilter?.addEventListener('change', filterAndSort);
+  ratingFilter?.addEventListener('change', filterAndSort);
+</script>

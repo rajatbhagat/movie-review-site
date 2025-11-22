@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About">
+  <div class="max-w-4xl mx-auto px-4 py-16">
+    <h1 class="text-4xl md:text-5xl font-display font-bold mb-8">About CineReview</h1>
+
+    <div class="prose prose-invert prose-lg">
+      <p class="text-xl text-gray-300 mb-8">
+        Welcome to CineReview, your trusted source for thoughtful, honest movie reviews.
+        We believe that great cinema deserves more than a simple thumbs up or down.
+      </p>
+
+      <h2>Our Mission</h2>
+      <p>
+        In a world of endless streaming options and countless new releases,
+        finding movies worth your time can be overwhelming. That's where we come in.
+        Our mission is to help you discover films that will truly move, entertain,
+        and inspire you.
+      </p>
+
+      <h2>What Makes Us Different</h2>
+      <p>
+        We don't just rate movies—we explore them. Each review dives into the
+        storytelling, performances, cinematography, and what makes a film tick.
+        Whether it's a blockbuster or an indie gem, we approach every movie
+        with the same level of care and analysis.
+      </p>
+
+      <h2>Our Rating System</h2>
+      <p>
+        We use a 10-point scale that accounts for all aspects of filmmaking:
+      </p>
+      <ul>
+        <li><strong>9-10:</strong> Masterpiece - A must-watch that will stay with you</li>
+        <li><strong>7-8:</strong> Great - Highly recommended with minor flaws</li>
+        <li><strong>5-6:</strong> Good - Worth watching if you enjoy the genre</li>
+        <li><strong>3-4:</strong> Below Average - Some redeeming qualities</li>
+        <li><strong>1-2:</strong> Skip It - Not worth your time</li>
+      </ul>
+
+      <h2>Get Involved</h2>
+      <p>
+        We love hearing from fellow movie enthusiasts! Feel free to leave comments
+        on our reviews, share your own ratings, and save your favorites.
+        Cinema is best enjoyed as a community.
+      </p>
+    </div>
+
+    <div class="mt-12 p-8 bg-dark-card rounded-xl border border-dark-border">
+      <h3 class="text-xl font-display font-bold mb-4">Get in Touch</h3>
+      <p class="text-gray-400 mb-4">
+        Have a movie you'd like us to review? Questions or feedback?
+        We'd love to hear from you.
+      </p>
+      <a
+        href="mailto:hello@cinereview.com"
+        class="inline-flex items-center gap-2 text-primary-400 hover:text-primary-300 transition"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+        hello@cinereview.com
+      </a>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,96 @@
+---
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/category/action', label: 'Action' },
+  { href: '/category/drama', label: 'Drama' },
+  { href: '/category/sci-fi', label: 'Sci-Fi' },
+  { href: '/about', label: 'About' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-50 bg-dark-bg/80 backdrop-blur-lg border-b border-dark-border">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 group">
+        <svg class="w-8 h-8 text-primary-500" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
+        </svg>
+        <span class="text-xl font-display font-bold group-hover:text-primary-400 transition">
+          CineReview
+        </span>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-1">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              'px-4 py-2 rounded-lg text-sm font-medium transition',
+              currentPath === link.href
+                ? 'bg-primary-500/20 text-primary-400'
+                : 'text-gray-400 hover:text-white hover:bg-dark-card'
+            ]}
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+
+      <!-- Search & Actions -->
+      <div class="flex items-center gap-4">
+        <a
+          href="/search"
+          class="p-2 text-gray-400 hover:text-white hover:bg-dark-card rounded-lg transition"
+          aria-label="Search"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </a>
+
+        <!-- Mobile Menu Button -->
+        <button
+          id="mobile-menu-btn"
+          class="md:hidden p-2 text-gray-400 hover:text-white hover:bg-dark-card rounded-lg transition"
+          aria-label="Toggle menu"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav id="mobile-menu" class="hidden md:hidden pb-4">
+      <div class="flex flex-col gap-1">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              'px-4 py-3 rounded-lg font-medium transition',
+              currentPath === link.href
+                ? 'bg-primary-500/20 text-primary-400'
+                : 'text-gray-400 hover:text-white hover:bg-dark-card'
+            ]}
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  menuBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+  });
+</script>

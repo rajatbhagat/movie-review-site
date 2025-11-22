@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ReviewCard from '../components/ReviewCard.astro';
+import SearchBar from '../components/SearchBar.astro';
+import { getCollection } from 'astro:content';
+
+const allReviews = await getCollection('reviews');
+const sortedReviews = allReviews.sort(
+  (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+);
+
+const featuredReviews = sortedReviews.filter((r) => r.data.featured);
+const latestReviews = sortedReviews.slice(0, 8);
+---
+
+<BaseLayout title="Home">
+  <!-- Hero Section -->
+  <section class="relative py-20 px-4 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-primary-900/20 via-dark-bg to-dark-bg" />
+    <div class="relative max-w-4xl mx-auto text-center">
+      <h1 class="text-5xl md:text-7xl font-display font-bold mb-6">
+        Your Guide to the
+        <span class="text-gradient">Best Movies</span>
+      </h1>
+      <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+        Honest reviews, thoughtful analysis, and recommendations
+        for film lovers who want more than just a star rating.
+      </p>
+      <div class="max-w-xl mx-auto">
+        <SearchBar placeholder="Search for a movie..." />
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Reviews -->
+  {featuredReviews.length > 0 && (
+    <section class="py-12 px-4">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-2xl font-display font-bold">Featured Reviews</h2>
+          <a href="/search" class="text-primary-400 hover:text-primary-300 transition text-sm">
+            View All →
+          </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {featuredReviews.slice(0, 4).map((review) => (
+            <ReviewCard
+              title={review.data.title}
+              slug={review.slug}
+              rating={review.data.rating}
+              poster={review.data.poster}
+              genre={review.data.genre}
+              year={review.data.year}
+              excerpt={review.data.excerpt}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Latest Reviews -->
+  <section class="py-12 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl font-display font-bold">Latest Reviews</h2>
+        <a href="/search" class="text-primary-400 hover:text-primary-300 transition text-sm">
+          View All →
+        </a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {latestReviews.map((review) => (
+          <ReviewCard
+            title={review.data.title}
+            slug={review.slug}
+            rating={review.data.rating}
+            poster={review.data.poster}
+            genre={review.data.genre}
+            year={review.data.year}
+            excerpt={review.data.excerpt}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Grid -->
+  <section class="py-12 px-4 bg-dark-card/50">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-2xl font-display font-bold mb-8 text-center">Browse by Genre</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {['Action', 'Drama', 'Sci-Fi', 'Comedy', 'Horror', 'Thriller', 'Romance', 'Animation', 'Documentary', 'Fantasy'].map((genre) => (
+          <a
+            href={`/category/${genre.toLowerCase()}`}
+            class="group p-6 bg-dark-card rounded-xl border border-dark-border hover:border-primary-500 transition text-center"
+          >
+            <span class="text-lg font-medium text-gray-300 group-hover:text-primary-400 transition">
+              {genre}
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="py-16 px-4">
+    <div class="max-w-2xl mx-auto text-center">
+      <h2 class="text-3xl font-display font-bold mb-4">Stay Updated</h2>
+      <p class="text-gray-400 mb-8">
+        Get the latest reviews delivered straight to your inbox.
+      </p>
+      <form class="flex flex-col sm:flex-row gap-4 justify-center">
+        <input
+          type="email"
+          placeholder="Enter your email"
+          class="px-4 py-3 bg-dark-card border border-dark-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition flex-1 max-w-md"
+        />
+        <button
+          type="submit"
+          class="px-6 py-3 bg-primary-600 hover:bg-primary-500 text-white font-medium rounded-lg transition"
+        >
+          Subscribe
+        </button>
+      </form>
+    </div>
+  </section>
+</BaseLayout>
