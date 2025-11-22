@@ -4,7 +4,7 @@ rating: 8
 genre: ["Thriller", "Mystery", "Malayalam", "Psychological"]
 director: "Amal Neerad"
 year: 2024
-poster: "https://image.tmdb.org/t/p/w500/npPU7uPATIoLSMPsIkuPNoIvTfP.jpg"
+poster: "https://m.media-amazon.com/images/M/MV5BYjE0YjljZjctYTJlMS00OWQ1LTgwZmQtOGMyYjA3MzhmMDk3XkEyXkFqcGc@._V1_.jpg"
 excerpt: "A haunting psychological thriller that keeps you guessing until its devastating final moments."
 publishDate: 2024-11-21
 featured: true

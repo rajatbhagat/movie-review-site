@@ -4,7 +4,7 @@ rating: 8
 genre: ["Action", "Thriller", "Bollywood"]
 director: "Atlee"
 year: 2023
-poster: "https://image.tmdb.org/t/p/w500/jBFxXDCKCQLOHgGUfO6O5vPfXbq.jpg"
+poster: "https://m.media-amazon.com/images/M/MV5BNDYyNWFlYWQtY2Q2NC00YTk5LTljNDAtNjEzMzc0NTI5NTdkXkEyXkFqcGc@._V1_.jpg"
 excerpt: "Shah Rukh Khan delivers a mass entertainer that blends social commentary with spectacular action."
 publishDate: 2024-11-21
 featured: true
